@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday! 🎉</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <style>
+        :root {
+            --primary: #ff6b6b;
+            --secondary: #feca57;
+            --bg: #222f3e;
+            --text: #ffffff;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg);
+            color: var(--text);
+            font-family: 'Poppins', sans-serif;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        /* --- START SCREEN --- */
+        #start-screen {
+            position: absolute;
+            z-index: 20;
+            background: rgba(0,0,0,0.9);
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .start-btn {
+            padding: 15px 40px;
+            font-size: 1.5rem;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s;
+            font-family: 'Pacifico', cursive;
+            box-shadow: 0 4px 15px rgba(255,107,107,0.4);
+        }
+
+        .start-btn:hover {
+            transform: scale(1.1);
+            background: #ff5252;
+        }
+
+        /* --- MAIN CONTAINER --- */
+        #main-container {
+            display: none;
+            width: 90%;
+            max-width: 800px;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* --- TIMER --- */
+        .timer-box {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--secondary);
+            font-weight: bold;
+            font-family: 'Pacifico', cursive;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: #444;
+            border-radius: 5px;
+            margin-bottom: 30px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--primary);
+            width: 100%;
+            transition: width 1s linear;
+        }
+
+        /* --- SLIDESHOW --- */
+        .slideshow {
+            width: 100%;
+            height: 300px;
+            background: #333;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            transition: opacity 1s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .slide.active {
+            opacity: 1;
+        }
+
+        .slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .slide-caption {
+            position: absolute;
+            bottom: 20px;
+            background: rgba(0,0,0,0.6);
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-size: 1.2rem;
+        }
+
+        /* --- FINAL MESSAGE (LOCKED) --- */
+        #final-message {
+            display: none;
+            opacity: 0;
+            transition: opacity 2s ease;
+        }
+
+        h1 {
+            font-family: 'Pacifico', cursive;
+            font-size: 3rem;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        .message-text {
+            font-size: 1.2rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto 30px;
+        }
+
+        .unlock-btn {
+            background: var(--secondary);
+            color: #333;
+            padding: 10px 30px;
+            border: none;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            display: none;
+            font-size: 1.2rem;
+        }
+
+        .unlock-btn:hover {
+            background: #ffca28;
+        }
+
+        /* --- ANIMATIONS --- */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        /* --- MOBILE --- */
+        @media (max-width: 600px) {
+            h1 { font-size: 2rem; }
+            .timer-box { font-size: 1.8rem; }
+            .slideshow { height: 200px; }
+            .start-btn { font-size: 1.2rem; padding: 12px 30px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- AUDIO: Birthday Music (Public URL) -->
+    <audio id="bg-music" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_525252525.mp3?filename=birthday-party-12345.mp3" type="audio/mpeg">
+        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
+    </audio>
+
+    <!-- START SCREEN -->
+    <div id="start-screen">
+        <h1 style="font-size: 3rem; margin-bottom: 20px;">🎁</h1>
+        <h1 style="font-size: 2rem; margin-bottom: 30px;">A Surprise Awaits!</h1>
+        <button class="start-btn pulse" onclick="startExperience()">Click to Open</button>
+    </div>
+
+    <!-- MAIN CONTAINER -->
+    <div id="main-container">
+        <div class="timer-box">
+            <span id="timer">60</span> seconds remaining
+        </div>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+        </div>
+
+        <div class="slideshow" id="slideshow">
+            <div class="slide active">
+                <img src="https://images.unsplash.com/photo-1513151233558-d860c5398176?q=80&w=1000&auto=format&fit=crop" alt="Memory 1">
+                <div class="slide-caption">Our First Adventure</div>
+            </div>
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1000&auto=format&fit=crop" alt="Memory 2">
+                <div class="slide-caption">Best Coffee Together</div>
+            </div>
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1492684223066-81342ee5ff30?q=80&w=1000&auto=format&fit=crop" alt="Memory 3">
+                <div class="slide-caption">That Crazy Night</div>
+            </div>
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1530103862676-de3c9a59af38?q=80&w=1000&auto=format&fit=crop" alt="Memory 4">
+                <div class="slide-caption">Best Friends Forever</div>
+            </div>
+            <div class="slide">
+                <img src="https://images.unsplash.com/photo-1511632765486-a01980e01a18?q=80&w=1000&auto=format&fit=crop" alt="Memory 5">
+                <div class="slide-caption">Special Day Ahead</div>
+            </div>
+        </div>
+
+        <div id="final-message">
+            <h1>Happy Birthday! 🎉</h1>
+            <p class="message-text">
+                Thank you for being such an amazing person in my life. 
+                I hope this day is as special as you are! 
+                Here's to many more memories together! 🥳
+            </p>
+            <button class="unlock-btn" onclick="celebrate()">🎊 Celebrate! 🎊</button>
+        </div>
+    </div>
+
+    <script>
+        const startScreen = document.getElementById('start-screen');
+        const mainContainer = document.getElementById('main-container');
+        const music = document.getElementById('bg-music');
+        const timerDisplay = document.getElementById('timer');
+        const progressFill = document.getElementById('progress-fill');
+        const finalMessage = document.getElementById('final-message');
+        const slides = document.querySelectorAll('.slide');
+        const unlockBtn = document.querySelector('.unlock-btn');
+
+        let timeLeft = 60;
+        let timerInterval;
+        let slideIndex = 0;
+        let slideInterval;
+
+        function startExperience() {
+            startScreen.style.display = 'none';
+            mainContainer.style.display = 'flex';
+
+            music.volume = 0.5;
+            music.play().catch(e => console.log('Audio play error:', e));
+
+            startTimer();
+            startSlideshow();
+        }
+
+        function startTimer() {
+            timerInterval = setInterval(() => {
+                timeLeft--;
+                timerDisplay.textContent = timeLeft;
+
+                const progress = (timeLeft / 60) * 100;
+                progressFill.style.width = progress + '%';
+
+                if (timeLeft <= 0) {
+                    clearInterval(timerInterval);
+                    unlockFinalMessage();
+                }
+            }, 1000);
+        }
+
+        function startSlideshow() {
+            slideInterval = setInterval(() => {
+                slides[slideIndex].classList.remove('active');
+                slideIndex = (slideIndex + 1) % slides.length;
+                slides[slideIndex].classList.add('active');
+            }, 12000); // 12 seconds per slide (5 slides = 60 seconds)
+        }
+
+        function unlockFinalMessage() {
+            clearInterval(slideInterval);
+            finalMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                finalMessage.style.opacity = '1';
+                unlockBtn.style.display = 'inline-block';
+            }, 100);
+        }
+
+        function celebrate() {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 }
+            });
+
+            setTimeout(() => {
+                confetti({
+                    particleCount: 100,
+                    spread: 50,
+                    origin: { x: 0.2, y: 0.5 }
+                });
+            }, 300);
+
+            setTimeout(() => {
+                confetti({
+                    particleCount: 100,
+                    spread: 50,
+                    origin: { x: 0.8, y: 0.5 }
+                });
+            }, 600);
+
+            unlockBtn.textContent = '🎉 Enjoy Your Day! 🎉';
+            unlockBtn.disabled = true;
+        }
+    </script>
+</body>
+</html>
