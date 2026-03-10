@@ -1,6 +1,17 @@
-<!DOCTYPE html><html lang="en">
-<head><meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0"><title>Happy Birthday Bachcha 🎉</title><link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600&display=swap" rel="stylesheet"><script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script><style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Happy Birthday Bachcha 🎉</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
+
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
 
 body{
 margin:0;
@@ -37,6 +48,11 @@ background:#ff4d6d;
 color:white;
 cursor:pointer;
 font-family:Pacifico,cursive;
+transition:0.3s;
+}
+
+.start-btn:hover{
+transform:scale(1.05);
 }
 
 /* main */
@@ -86,12 +102,13 @@ position:relative;
 display:flex;
 align-items:center;
 justify-content:center;
+box-shadow:0 10px 25px rgba(0,0,0,0.6);
 }
 
 .slide{
 position:absolute;
 opacity:0;
-transition:opacity 1s;
+transition:opacity 1.2s ease;
 width:100%;
 height:100%;
 display:flex;
@@ -106,6 +123,15 @@ opacity:1;
 .slide img{
 max-width:100%;
 max-height:100%;
+animation:zoom 12s ease-in-out;
+}
+
+/* smooth zoom animation */
+
+@keyframes zoom{
+0%{transform:scale(1);}
+50%{transform:scale(1.06);}
+100%{transform:scale(1);}
 }
 
 .caption{
@@ -114,6 +140,7 @@ bottom:10px;
 background:rgba(0,0,0,0.6);
 padding:8px 18px;
 border-radius:20px;
+font-size:0.9rem;
 }
 
 /* final message */
@@ -138,35 +165,83 @@ font-size:1.1rem;
 border-radius:10px;
 cursor:pointer;
 margin-top:10px;
+transition:0.3s;
 }
 
-</style></head><body><audio id="music" loop>
-<source src="music.mp3" type="audio/mpeg">
-</audio><div id="start-screen"><h1>🎁</h1>
-<h2>A Surprise Awaits</h2><button class="start-btn" onclick="start()">Open</button>
+button:hover{
+transform:scale(1.05);
+}
 
-</div><div id="main-container"><div class="timer">
+</style>
+</head>
+
+<body>
+
+<audio id="music" loop>
+<source src="music.mp3" type="audio/mpeg">
+</audio>
+
+<div id="start-screen">
+
+<h1>🎁</h1>
+<h2>A Surprise Awaits</h2>
+
+<button class="start-btn" onclick="start()">Open</button>
+
+</div>
+
+<div id="main-container">
+
+<div class="timer">
 <span id="time">60</span> seconds remaining
-</div><div class="progress">
+</div>
+
+<div class="progress">
 <div class="progress-fill" id="bar"></div>
-</div><div class="slideshow"><div class="slide active">
+</div>
+
+<div class="slideshow">
+
+<div class="slide active">
 <img src="Mu1.png">
 <div class="caption">My Appcent Gurlly 😇</div>
-</div><div class="slide">
+</div>
+
+<div class="slide">
 <img src="Mu2.png">
 <div class="caption">My Gorgeous Model 😍</div>
-</div><div class="slide">
+</div>
+
+<div class="slide">
 <img src="Mu3.png">
 <div class="caption">My Black Cat 😻</div>
-</div><div class="slide">
+</div>
+
+<div class="slide">
 <img src="Mu4.png">
 <div class="caption">Best Commitment 💌</div>
-</div><div class="slide">
+</div>
+
+<div class="slide">
 <img src="Mu5.png">
 <div class="caption">Our Confession Day 💞</div>
-</div></div><div id="final-message"><h1>Happy Birthday 😘🥰🎂🎀</h1><p id="message"></p><button onclick="celebrate()">Celebrate 🎊</button>
+</div>
 
-</div></div><script>
+</div>
+
+<div id="final-message">
+
+<h1>Happy Birthday 😘🥰🎂🎀</h1>
+
+<p id="message"></p>
+
+<button onclick="celebrate()">Celebrate 🎊</button>
+
+</div>
+
+</div>
+
+<script>
 
 let time=60
 let slide=0
@@ -180,7 +255,7 @@ document.getElementById("start-screen").style.display="none"
 document.getElementById("main-container").style.display="flex"
 
 music.volume=0.4
-music.play()
+music.play().catch(()=>{})
 
 timer()
 slideshow()
@@ -264,6 +339,7 @@ origin:{y:0.6}
 
 }
 
-</script></body>
-</html>
+</script>
 
+</body>
+</html>
