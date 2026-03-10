@@ -1,344 +1,445 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Birthday Baccha! 🎉</title>
-    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
-    <style>
-        :root {
-            --primary: #ff6b6b;
-            --secondary: #feca57;
-            --bg: #222f3e;
-            --text: #ffffff;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Poppins', sans-serif;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            text-align: center;
-        }
+<title>Happy Birthday Baccha 🎉</title>
 
-        /* --- START SCREEN --- */
-        #start-screen {
-            position: absolute;
-            z-index: 20;
-            background: rgba(0,0,0,0.9);
-            width: 100%;
-            height: 100%;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-        }
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@300;600&display=swap" rel="stylesheet">
 
-        .start-btn {
-            padding: 15px 40px;
-            font-size: 1.5rem;
-            background: var(--primary);
-            color: white;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.2s;
-            font-family: 'Pacifico', cursive;
-            box-shadow: 0 4px 15px rgba(255,107,107,0.4);
-        }
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
 
-        .start-btn:hover {
-            transform: scale(1.1);
-            background: #ff5252;
-        }
+<style>
 
-        /* --- MAIN CONTAINER --- */
-        #main-container {
-            display: none;
-            width: 90%;
-            max-width: 800px;
-            flex-direction: column;
-            align-items: center;
-        }
+:root{
+--primary:#ff4d6d;
+--secondary:#ffd166;
+--bg:#050505;
+--text:#ffffff;
+}
 
-        /* --- TIMER --- */
-        .timer-box {
-            font-size: 2.5rem;
-            margin-bottom: 20px;
-            color: var(--secondary);
-            font-weight: bold;
-            font-family: 'Pacifico', cursive;
-        }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
 
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background: #444;
-            border-radius: 5px;
-            margin-bottom: 30px;
-            overflow: hidden;
-        }
+body{
+background:var(--bg);
+color:var(--text);
+font-family:'Poppins',sans-serif;
+height:100vh;
+display:flex;
+justify-content:center;
+align-items:center;
+overflow:hidden;
+text-align:center;
+}
 
-        .progress-fill {
-            height: 100%;
-            background: var(--primary);
-            width: 100%;
-            transition: width 1s linear;
-        }
+/* floating hearts */
 
-        /* --- SLIDESHOW --- */
-        .slideshow {
-            width: 100%;
-            height: 300px;
-            background: #333;
-            border-radius: 15px;
-            overflow: hidden;
-            position: relative;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
+.heart{
+position:absolute;
+color:#ff4d6d;
+font-size:20px;
+animation:float 8s linear infinite;
+opacity:0.6;
+}
 
-        .slide {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            transition: opacity 1s ease;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
+@keyframes float{
+0%{transform:translateY(100vh)}
+100%{transform:translateY(-10vh)}
+}
 
-        .slide.active {
-            opacity: 1;
-        }
+/* start screen */
 
-        .slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+#start-screen{
+position:absolute;
+width:100%;
+height:100%;
+background:#000;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+z-index:10;
+}
 
-        .slide-caption {
-            position: absolute;
-            bottom: 20px;
-            background: rgba(0,0,0,0.6);
-            padding: 10px 20px;
-            border-radius: 20px;
-            font-size: 1.2rem;
-        }
+.start-btn{
+padding:15px 40px;
+font-size:1.4rem;
+border:none;
+border-radius:40px;
+background:var(--primary);
+color:white;
+cursor:pointer;
+font-family:'Pacifico',cursive;
+box-shadow:0 0 25px rgba(255,77,109,0.5);
+transition:0.3s;
+}
 
-        /* --- FINAL MESSAGE (LOCKED) --- */
-        #final-message {
-            display: none;
-            opacity: 0;
-            transition: opacity 2s ease;
-        }
+.start-btn:hover{
+transform:scale(1.1);
+}
 
-        h1 {
-            font-family: 'Pacifico', cursive;
-            font-size: 3rem;
-            color: var(--secondary);
-            margin-bottom: 20px;
-        }
+/* main container */
 
-        .message-text {
-            font-size: 1.2rem;
-            line-height: 1.6;
-            max-width: 600px;
-            margin: 0 auto 30px;
-        }
+#main-container{
+display:none;
+flex-direction:column;
+align-items:center;
+width:90%;
+max-width:800px;
+}
 
-        .unlock-btn {
-            background: var(--secondary);
-            color: #333;
-            padding: 10px 30px;
-            border: none;
-            border-radius: 5px;
-            font-weight: bold;
-            cursor: pointer;
-            display: none;
-            font-size: 1.2rem;
-        }
+/* timer */
 
-        .unlock-btn:hover {
-            background: #ffca28;
-        }
+.timer-box{
+font-size:2rem;
+margin-bottom:15px;
+color:var(--secondary);
+font-family:'Pacifico',cursive;
+}
 
-        /* --- ANIMATIONS --- */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
+.progress-bar{
+width:100%;
+height:10px;
+background:#333;
+border-radius:20px;
+overflow:hidden;
+margin-bottom:25px;
+}
 
-        .pulse {
-            animation: pulse 2s infinite;
-        }
+.progress-fill{
+height:100%;
+width:100%;
+background:var(--primary);
+transition:width 1s linear;
+}
 
-        /* --- MOBILE --- */
-        @media (max-width: 600px) {
-            h1 { font-size: 2rem; }
-            .timer-box { font-size: 1.8rem; }
-            .slideshow { height: 200px; }
-            .start-btn { font-size: 1.2rem; padding: 12px 30px; }
-        }
-    </style>
+/* slideshow */
+
+.slideshow{
+width:100%;
+height:320px;
+background:#111;
+border-radius:15px;
+overflow:hidden;
+position:relative;
+box-shadow:0 10px 30px rgba(0,0,0,0.7);
+margin-bottom:25px;
+}
+
+.slide{
+position:absolute;
+width:100%;
+height:100%;
+opacity:0;
+transition:opacity 1s ease;
+}
+
+.slide.active{
+opacity:1;
+}
+
+.slide img{
+width:100%;
+height:100%;
+object-fit:cover;
+animation:zoom 12s linear;
+}
+
+@keyframes zoom{
+from{transform:scale(1)}
+to{transform:scale(1.1)}
+}
+
+.slide-caption{
+position:absolute;
+bottom:15px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(0,0,0,0.6);
+padding:8px 18px;
+border-radius:20px;
+font-size:1rem;
+}
+
+/* final message */
+
+#final-message{
+display:none;
+opacity:0;
+transition:opacity 2s ease;
+}
+
+h1{
+font-family:'Pacifico',cursive;
+color:var(--secondary);
+margin-bottom:15px;
+}
+
+.message-text{
+font-size:1.1rem;
+line-height:1.6;
+max-width:600px;
+margin:auto;
+margin-bottom:25px;
+min-height:80px;
+}
+
+.unlock-btn{
+background:var(--secondary);
+border:none;
+padding:12px 28px;
+font-size:1.1rem;
+border-radius:10px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.unlock-btn:hover{
+background:#ffc233;
+}
+
+/* mobile */
+
+@media(max-width:600px){
+
+.slideshow{
+height:220px;
+}
+
+.timer-box{
+font-size:1.5rem;
+}
+
+}
+
+</style>
 </head>
+
 <body>
 
-    <!-- AUDIO: Birthday Music (Public URL) -->
-    <audio id="bg-music" loop>
-        <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_525252525.mp3?filename=birthday-party-12345.mp3" type="audio/mpeg">
-        <source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg">
-    </audio>
+<audio id="bg-music" loop>
+<source src="https://cdn.pixabay.com/audio/2023/03/16/audio_6d76f5e8e5.mp3">
+</audio>
 
-    <!-- START SCREEN -->
-    <div id="start-screen">
-        <h1 style="font-size: 3rem; margin-bottom: 20px;">🎁</h1>
-        <h1 style="font-size: 2rem; margin-bottom: 30px;">A Surprise Awaits!</h1>
-        <button class="start-btn pulse" onclick="startExperience()">Click to Open</button>
-    </div>
+<!-- hearts -->
 
-    <!-- MAIN CONTAINER -->
-    <div id="main-container">
-        <div class="timer-box">
-            <span id="timer">60</span> seconds remaining
-        </div>
-        
-        <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill"></div>
-        </div>
+<div class="heart" style="left:10%">❤</div>
+<div class="heart" style="left:25%">❤</div>
+<div class="heart" style="left:50%">❤</div>
+<div class="heart" style="left:70%">❤</div>
+<div class="heart" style="left:85%">❤</div>
 
-        <div class="slideshow" id="slideshow">
-            <div class="slide active">
-                <img src="Mu1.png&w=1000&auto=format&fit=crop" alt="Memory 1">
-                <div class="slide-caption">Shot At Clothes Store</div>
-            </div>
-            <div class="slide">
-                <img src="Mu2.png&w=1000&auto=format&fit=crop" alt="Memory 2">
-                <div class="slide-caption">My Gorgeous Model</div>
-            </div>
-            <div class="slide">
-                <img src="Mu3.png&w=1000&auto=format&fit=crop" alt="Memory 3">
-                <div class="slide-caption">That Black Cat</div>
-            </div>
-            <div class="slide">
-                <img src="Mu4.png&w=1000&auto=format&fit=crop" alt="Memory 4">
-                <div class="slide-caption">Best Commitment</div>
-            </div>
-            <div class="slide">
-                <img src="Mu5.png&w=1000&auto=format&fit=crop" alt="Memory 5">
-                <div class="slide-caption">Our Confession Day</div>
-            </div>
-        </div>
+<!-- start screen -->
 
-        <div id="final-message">
-            <h1>Happy Birthday Mussu! 🎉</h1>
-            <p class="message-text">
-                Thank you for being such an amazing person in my life. 
-                I hope this day is as special as you are! 
-                Here's to many more memories together! 🥳
-            </p>
-            <button class="unlock-btn" onclick="celebrate()">🎊 Celebrate! 🎊</button>
-        </div>
-    </div>
+<div id="start-screen">
 
-    <script>
-        const startScreen = document.getElementById('start-screen');
-        const mainContainer = document.getElementById('main-container');
-        const music = document.getElementById('bg-music');
-        const timerDisplay = document.getElementById('timer');
-        const progressFill = document.getElementById('progress-fill');
-        const finalMessage = document.getElementById('final-message');
-        const slides = document.querySelectorAll('.slide');
-        const unlockBtn = document.querySelector('.unlock-btn');
+<h1 style="font-size:3rem;">🎁</h1>
+<h2 style="margin:20px;">A Surprise Awaits</h2>
 
-        let timeLeft = 60;
-        let timerInterval;
-        let slideIndex = 0;
-        let slideInterval;
+<button class="start-btn" onclick="startExperience()">
+Open
+</button>
 
-        function startExperience() {
-            startScreen.style.display = 'none';
-            mainContainer.style.display = 'flex';
+</div>
 
-            music.volume = 0.5;
-            music.play().catch(e => console.log('Audio play error:', e));
+<!-- main -->
 
-            startTimer();
-            startSlideshow();
-        }
+<div id="main-container">
 
-        function startTimer() {
-            timerInterval = setInterval(() => {
-                timeLeft--;
-                timerDisplay.textContent = timeLeft;
+<div class="timer-box">
+<span id="timer">60</span> seconds remaining
+</div>
 
-                const progress = (timeLeft / 60) * 100;
-                progressFill.style.width = progress + '%';
+<div class="progress-bar">
+<div class="progress-fill" id="progress-fill"></div>
+</div>
 
-                if (timeLeft <= 0) {
-                    clearInterval(timerInterval);
-                    unlockFinalMessage();
-                }
-            }, 1000);
-        }
+<div class="slideshow">
 
-        function startSlideshow() {
-            slideInterval = setInterval(() => {
-                slides[slideIndex].classList.remove('active');
-                slideIndex = (slideIndex + 1) % slides.length;
-                slides[slideIndex].classList.add('active');
-            }, 12000); // 12 seconds per slide (5 slides = 60 seconds)
-        }
+<div class="slide active">
+<img src="Mu1.png">
+<div class="slide-caption">Shot At Clothes Store</div>
+</div>
 
-        function unlockFinalMessage() {
-            clearInterval(slideInterval);
-            finalMessage.style.display = 'block';
-            
-            setTimeout(() => {
-                finalMessage.style.opacity = '1';
-                unlockBtn.style.display = 'inline-block';
-            }, 100);
-        }
+<div class="slide">
+<img src="Mu2.png">
+<div class="slide-caption">My Gorgeous Model</div>
+</div>
 
-        function celebrate() {
-            confetti({
-                particleCount: 150,
-                spread: 70,
-                origin: { y: 0.6 }
-            });
+<div class="slide">
+<img src="Mu3.png">
+<div class="slide-caption">That Black Cat</div>
+</div>
 
-            setTimeout(() => {
-                confetti({
-                    particleCount: 100,
-                    spread: 50,
-                    origin: { x: 0.2, y: 0.5 }
-                });
-            }, 300);
+<div class="slide">
+<img src="Mu4.png">
+<div class="slide-caption">Best Commitment</div>
+</div>
 
-            setTimeout(() => {
-                confetti({
-                    particleCount: 100,
-                    spread: 50,
-                    origin: { x: 0.8, y: 0.5 }
-                });
-            }, 600);
+<div class="slide">
+<img src="Mu5.png">
+<div class="slide-caption">Our Confession Day</div>
+</div>
 
-            unlockBtn.textContent = '🎉 Enjoy Your Day! 🎉';
-            unlockBtn.disabled = true;
-        }
-    </script>
+</div>
+
+<div id="final-message">
+
+<h1>Happy Birthday Mussu 🥰😘🎂🎊</h1>
+
+<p class="message-text" id="typeText"></p>
+
+<button class="unlock-btn" onclick="celebrate()">
+Celebrate 🎊
+</button>
+
+</div>
+
+</div>
+
+<script>
+
+const startScreen=document.getElementById("start-screen")
+const mainContainer=document.getElementById("main-container")
+const music=document.getElementById("bg-music")
+
+const timerDisplay=document.getElementById("timer")
+const progressFill=document.getElementById("progress-fill")
+
+const finalMessage=document.getElementById("final-message")
+const slides=document.querySelectorAll(".slide")
+
+let timeLeft=60
+let slideIndex=0
+
+function startExperience(){
+
+startScreen.style.display="none"
+mainContainer.style.display="flex"
+
+fadeMusic()
+
+startTimer()
+startSlides()
+
+}
+
+function fadeMusic(){
+
+music.volume=0
+music.play()
+
+let fade=setInterval(()=>{
+
+if(music.volume<0.5){
+music.volume+=0.05
+}else{
+clearInterval(fade)
+}
+
+},200)
+
+}
+
+function startTimer(){
+
+let timer=setInterval(()=>{
+
+timeLeft--
+
+timerDisplay.textContent=timeLeft
+
+progressFill.style.width=(timeLeft/60)*100+"%"
+
+if(timeLeft<=0){
+
+clearInterval(timer)
+
+showFinal()
+
+}
+
+},1000)
+
+}
+
+function startSlides(){
+
+setInterval(()=>{
+
+slides[slideIndex].classList.remove("active")
+
+slideIndex=(slideIndex+1)%slides.length
+
+slides[slideIndex].classList.add("active")
+
+},12000)
+
+}
+
+function showFinal(){
+
+finalMessage.style.display="block"
+
+setTimeout(()=>{
+finalMessage.style.opacity="1"
+typeWriter()
+},100)
+
+}
+
+function typeWriter(){
+
+const text="Thank you for being such a special person in my life. Every moment with you becomes a memory worth keeping. I hope your birthday is full of happiness, love and beautiful surprises."
+
+let i=0
+
+let typing=setInterval(()=>{
+
+document.getElementById("typeText").innerHTML+=text.charAt(i)
+
+i++
+
+if(i>=text.length){
+clearInterval(typing)
+}
+
+},40)
+
+}
+
+function celebrate(){
+
+confetti({
+particleCount:150,
+spread:70,
+origin:{y:0.6}
+})
+
+setTimeout(()=>{
+confetti({
+particleCount:100,
+spread:60,
+origin:{x:0.2,y:0.5}
+})
+},300)
+
+setTimeout(()=>{
+confetti({
+particleCount:100,
+spread:60,
+origin:{x:0.8,y:0.5}
+})
+},600)
+
+}
+
+</script>
+
 </body>
 </html>
-
